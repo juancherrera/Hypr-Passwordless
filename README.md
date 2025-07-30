@@ -2,7 +2,6 @@
 
 ## Overview
 
-```markdown
 The HYPR Passwordless PowerShell Module provides secure, reusable, and fully documented tools to automate identity, device, policy, and compliance workflows using the official HYPR API.
 
 It is designed for identity engineers, security analysts, and automation specialists managing enterprise-grade passwordless authentication.
@@ -14,11 +13,9 @@ Supported regulatory frameworks:
 - CMMC
 - ISO 27001
 - Zero Trust architectures
-```
 
 ## Features
 
-```markdown
 - Secure configuration and token-based authentication
 - User provisioning, enrollment, and offboarding
 - Device lifecycle and attestation management
@@ -28,24 +25,21 @@ Supported regulatory frameworks:
 - Registration throughput reporting
 - Fully modular design with reusable API logic
 - Full Pester test coverage
-```
 
 ## Folder Structure
 
-```text
-C:\src\Hypr-Passwordless
-├───config
-├───functions
-│   ├───Certificates
-│   ├───Compliance
-│   ├───Core
-│   ├───Devices
-│   └───Users
-└───tests
-    ├───Compliance
-    ├───Core
+C:\src\Hypr-Passwordless  
+├───config  
+├───functions  
+│   ├───Certificates  
+│   ├───Compliance  
+│   ├───Core  
+│   ├───Devices  
+│   └───Users  
+└───tests  
+    ├───Compliance  
+    ├───Core  
     └───Users
-```
 
 ## Installation
 
@@ -98,22 +92,17 @@ Invoke-Pester ./tests
 
 ## Contributing
 
-```markdown
-- Follow the naming convention Verb-HyprNoun
-- Include full comment-based help with .SYNOPSIS, .EXAMPLE, and .OUTPUTS
-- Include a matching .Tests.ps1 file in the tests/ folder
+- Follow the naming convention Verb-HyprNoun  
+- Include full comment-based help with .SYNOPSIS, .EXAMPLE, and .OUTPUTS  
+- Include a matching .Tests.ps1 file in the tests/ folder  
 - Use Invoke-HyprApi for all HTTP requests
-```
 
 ## License
 
-```text
 MIT License. Use at your own risk.
-```
 
 ## Maintainer
 
-```text
 Juan C. Herrera  
-Principal Identity Engineer  
-```
+Identity and Access Management Identity Professional  
+jherrera@holpop.io.com
