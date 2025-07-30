@@ -1,0 +1,1 @@
+function Get-HyprUser { <# .SYNOPSIS Get one or all users #> }

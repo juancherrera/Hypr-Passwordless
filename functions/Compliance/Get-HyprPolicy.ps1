@@ -1,0 +1,1 @@
+function Get-HyprPolicy { <# .SYNOPSIS List one or all policies #> }

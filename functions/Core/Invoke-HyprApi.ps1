@@ -1,0 +1,1 @@
+function Invoke-HyprApi { <# .SYNOPSIS Base API wrapper #> }

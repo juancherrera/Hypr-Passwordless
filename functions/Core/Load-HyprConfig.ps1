@@ -1,0 +1,1 @@
+function Load-HyprConfig { <# .SYNOPSIS Loads config from file/env #> }

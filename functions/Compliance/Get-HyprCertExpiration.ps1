@@ -1,0 +1,1 @@
+function Get-HyprCertExpiration { <# .SYNOPSIS Filter certs expiring in 30 days #> }

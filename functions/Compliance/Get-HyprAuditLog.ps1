@@ -1,0 +1,1 @@
+function Get-HyprAuditLog { <# .SYNOPSIS Get audit logs for export #> }

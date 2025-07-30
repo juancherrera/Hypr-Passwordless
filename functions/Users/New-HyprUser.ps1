@@ -1,0 +1,1 @@
+function New-HyprUser { <# .SYNOPSIS Create new user #> }

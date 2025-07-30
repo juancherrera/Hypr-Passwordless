@@ -1,0 +1,1 @@
+function Remove-HyprUserDevice { <# .SYNOPSIS Remove device from user #> }

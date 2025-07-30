@@ -1,0 +1,1 @@
+function Get-HyprToken { <# .SYNOPSIS Retrieves OAuth token #> }
