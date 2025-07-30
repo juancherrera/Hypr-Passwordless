@@ -1,5 +1,5 @@
 @{
-  RootModule        = 'HyprPasswordless.psm1'
+  RootModule        = 'Hypr-Passwordless.psm1'
   ModuleVersion     = '1.0.0'
   GUID              = '12345678-abcd-1234-ef00-0123456789ab'
   Author            = 'Juan C. Herrera'

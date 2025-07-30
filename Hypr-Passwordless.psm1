@@ -1,9 +1,16 @@
-# HyprPasswordless.psm1
+# Hypr-Passwordless.psm1
+# Automatically dot-sources all core HYPR module scripts
 
-# Import all core and supporting functions
-$basePath = $PSScriptRoot
+$functionPaths = @(
+  "$PSScriptRoot\functions\Core\*.ps1",
+  "$PSScriptRoot\functions\Certificates\*.ps1",
+  "$PSScriptRoot\functions\Compliance\*.ps1",
+  "$PSScriptRoot\functions\Devices\*.ps1",
+  "$PSScriptRoot\functions\Users\*.ps1"
+)
 
-# Recursively import all functions in subfolders
-Get-ChildItem -Path "$basePath\functions" -Filter *.ps1 -Recurse | ForEach-Object {
-  . $_.FullName
+foreach ($path in $functionPaths) {
+  Get-ChildItem -Path $path -File | ForEach-Object {
+    . $_.FullName
+  }
 }
