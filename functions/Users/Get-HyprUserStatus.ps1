@@ -1,17 +1,17 @@
-function Get-HyprUserDevices {
+function Get-HyprUserStatus {
   <#
   .SYNOPSIS
-      Gets devices registered to a HYPR user.
+      Gets HYPR user enrollment status.
   .DESCRIPTION
-      Retrieves detailed information about all devices registered to a specific user.
+      Retrieves the enrollment status and device count for a specific user.
   .PARAMETER Username
-      Username to query.
+      Username to check.
   .PARAMETER Config
       HYPR configuration object.
   .EXAMPLE
-      $devices = Get-HyprUserDevices -Username "user@domain.com" -Config $config
+      $status = Get-HyprUserStatus -Username "user@domain.com" -Config $config
   .OUTPUTS
-      [PSCustomObject[]] Array of device objects
+      [PSCustomObject] User status object with registration and device count
   #>
   param(
     [Parameter(Mandatory)]
@@ -22,7 +22,7 @@ function Get-HyprUserDevices {
   )
       
   $encodedUsername = ConvertTo-UrlEncoded -InputString $Username
-  $endpoint = "/rp/api/versioned/fido2/user?username=$encodedUsername"
+  $endpoint = "/rp/api/versioned/fido2/user/status?username=$encodedUsername"
       
   try {
     $response = Invoke-HyprApi -Method GET -Endpoint $endpoint -Config $Config -TokenType RP
@@ -35,6 +35,6 @@ function Get-HyprUserDevices {
     }
   }
   catch {
-    throw "Failed to get devices for user $Username`: $($_.Exception.Message)"
+    throw "Failed to get user status for $Username`: $($_.Exception.Message)"
   }
 }

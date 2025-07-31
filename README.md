@@ -1,108 +1,101 @@
-# HYPR Passwordless PowerShell Module
+<#
+# HYPR Passwordless PowerShell Module v2.0
 
-## Overview
+## Quick Start
 
-The HYPR Passwordless PowerShell Module provides secure, reusable, and fully documented tools to automate identity, device, policy, and compliance workflows using the official HYPR API.
-
-It is designed for identity engineers, security analysts, and automation specialists managing enterprise-grade passwordless authentication.
-
-Supported regulatory frameworks:
-- NIST 800-63B
-- HIPAA
-- SOX
-- CMMC
-- ISO 27001
-- Zero Trust architectures
-
-## Features
-
-- Secure configuration and token-based authentication
-- User provisioning, enrollment, and offboarding
-- Device lifecycle and attestation management
-- Certificate expiration checks and rotation
-- Compliance policy drift and audit log monitoring
-- Role management and privilege drift cleanup
-- Registration throughput reporting
-- Fully modular design with reusable API logic
-- Full Pester test coverage
-
-## Folder Structure
-
-C:\src\Hypr-Passwordless  
-├───config  
-├───functions  
-│   ├───Certificates  
-│   ├───Compliance  
-│   ├───Core  
-│   ├───Devices  
-│   └───Users  
-└───tests  
-    ├───Compliance  
-    ├───Core  
-    └───Users
-
-## Installation
-
+1. **Import the module:**
 ```powershell
-# Clone the repository
-git clone https://github.com/juancherrera/Hypr-Passwordless.git
-
-# Import the module
-Import-Module ./functions/Core/Import-HyprModule.ps1
+Import-Module .\Hypr-Passwordless.psd1 -Force
 ```
 
-## Configuration
-
+2. **Configure your HYPR connection:**
 ```powershell
-# Load configuration from a JSON file
-$HyprConfig = Load-HyprConfig -Path "C:\path\to\hyprconfig.json"
+# This creates a default config file you need to edit
+$config = Load-HyprConfig -Path ".\config\hypr_config.json"
 ```
 
+3. **Edit the config file with your HYPR details:**
 ```json
 {
-  "TenantUrl": "https://your-hypr-domain.hypr.com",
-  "ClientId": "your-client-id",
-  "ClientSecret": "your-secret"
+  "BaseUrl": "https://your-tenant.hypr.com",
+  "RPAppId": "ProdExt",
+  "RPAppToken": "hypap-your-rp-token-here",
+  "CCAdminToken": "hypap-your-admin-token-here",
+  "TimeoutSeconds": 60,
+  "RetryAttempts": 3,
+  "LogFile": "hypr-module.log"
 }
 ```
 
-## Usage Examples
+4. **Connect and test:**
+```powershell
+$config = Connect-Hypr
+Test-HyprConnection -Config $config
+```
+
+## Core Functions
+
+### User Management
+- `Get-HyprUserStatus` - Check if user is enrolled
+- `Get-HyprUserDevices` - Get user's registered devices  
+- `Remove-HyprUser` - Remove user and all devices
+- `Remove-HyprUserDevice` - Remove specific device
+
+### Authentication
+- `Start-HyprAuthentication` - Initiate push authentication
+- `Get-HyprAuthenticationStatus` - Check auth status
+- `New-HyprQRCode` - Create device registration QR code
+- `Get-HyprRecoveryPIN` - Get user recovery PIN
+
+### Configuration & Monitoring
+- `Get-HyprFIDO2Settings` - Get security settings
+- `Get-HyprAuditLog` - Get compliance audit logs
+- `Test-HyprConnection` - Health check
+
+## Examples
 
 ```powershell
-# Get all enrolled users
-Get-HyprUser -Status "ENROLLED"
+# Check user enrollment
+$status = Get-HyprUserStatus -Username "user@domain.com" -Config $config
+if ($status.registered) {
+    $devices = Get-HyprUserDevices -Username "user@domain.com" -Config $config
+    Write-Host "User has $($devices.Count) devices registered"
+}
 
-# Check certificate expiration
-Get-HyprCertificates | Where-Object { $_.expirationDate -lt (Get-Date).AddDays(30) }
+# Start authentication
+$auth = Start-HyprAuthentication -Username "user@domain.com" -TransactionText "Login approval" -Config $config
+$status = Get-HyprAuthenticationStatus -SessionId $auth.requestId -Config $config
 
-# Reset a user's device
-Reset-HyprUser -UserId "abc123"
+# Get security settings
+$settings = Get-HyprFIDO2Settings -Config $config
+Write-Host "User verification: $($settings.userVerification)"
 
-# Export and compare policy snapshots
-Export-HyprPolicySnapshot -Path "snapshot.json"
-Compare-HyprPolicySnapshot -Old "baseline.json" -New "snapshot.json"
+# Create QR code for registration
+$qr = New-HyprQRCode -Username "newuser@domain.com" -Config $config
 ```
+
+## Token Requirements
+
+- **RP App Token:** Required for all user operations, authentication, and device management
+- **CC Admin Token:** Required for audit logs and advanced admin functions
+
+Get tokens from your HYPR Control Center:
+1. Go to your RP Application (e.g., ProdExt)
+2. Navigate to Advanced Config > Access Tokens
+3. Create new token and copy the `hypap-` token value
+
+## Error Handling
+
+All functions include comprehensive error handling with specific error messages for:
+- Authentication failures (401)
+- Permission issues (403) 
+- Rate limiting (429)
+- Server errors (500)
+- Network timeouts
 
 ## Testing
 
+Run the included Pester tests:
 ```powershell
-# Run all Pester tests
-Invoke-Pester ./tests
+Invoke-Pester .\tests\ -Recurse
 ```
-
-## Contributing
-
-- Follow the naming convention Verb-HyprNoun  
-- Include full comment-based help with .SYNOPSIS, .EXAMPLE, and .OUTPUTS  
-- Include a matching .Tests.ps1 file in the tests/ folder  
-- Use Invoke-HyprApi for all HTTP requests
-
-## License
-
-MIT License. Use at your own risk.
-
-## Maintainer
-
-Juan C. Herrera  
-Identity and Access Management Identity Professional  
-jherrera@holpop.io.com
