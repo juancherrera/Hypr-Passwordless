@@ -47,6 +47,16 @@ function Get-HyprUser {
       }
     }
           
+    # PowerShell 5.1 compatible device date handling
+    $oldestDevice = $null
+    $newestDevice = $null
+    if ($devices.Count -gt 0) {
+      $sortedOldest = $devices | Sort-Object CreateDate | Select-Object -First 1
+      $sortedNewest = $devices | Sort-Object CreateDate -Descending | Select-Object -First 1
+      $oldestDevice = if ($sortedOldest) { $sortedOldest.CreateDate } else { $null }
+      $newestDevice = if ($sortedNewest) { $sortedNewest.CreateDate } else { $null }
+    }
+          
     # Build comprehensive user object
     $userProfile = [PSCustomObject]@{
       Username         = $Username
@@ -59,8 +69,8 @@ function Get-HyprUser {
       Summary          = @{
         TotalDevices = $devices.Count
         DeviceTypes  = ($devices | Group-Object DeviceType | ForEach-Object { "$($_.Name): $($_.Count)" }) -join ", "
-        OldestDevice = ($devices | Sort-Object CreateDate | Select-Object -First 1)?.CreateDate
-        NewestDevice = ($devices | Sort-Object CreateDate -Descending | Select-Object -First 1)?.CreateDate
+        OldestDevice = $oldestDevice
+        NewestDevice = $newestDevice
       }
     }
           
