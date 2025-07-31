@@ -1,40 +1,32 @@
-# ============================================================================
-# HYPR PowerShell Module v3.0 - Production Ready with Corrected API Implementation
-# Compatible with HYPR API v8.0+ and PowerShell 5.1+
-# ============================================================================
+# Fix the module exports
+$moduleContent = Get-Content ".\Hypr-Passwordless.psm1" -Raw
 
-# Module Manifest (Hypr-Passwordless.psd1)
-@{
-  RootModule        = 'Hypr-Passwordless.psm1'
-  ModuleVersion     = '3.0.0'
-  GUID              = '12345678-abcd-1234-ef00-0123456789ab'
-  Author            = 'Juan C. Herrera'
-  CompanyName       = 'Holpop.io'
-  Description       = 'Production-ready HYPR Identity & Passwordless Management with corrected API v8.0+ endpoints'
-  PowerShellVersion = '5.1'
-  RequiredModules   = @()
-  
-  FunctionsToExport = @(
-    'Connect-Hypr',
-    'Test-HyprConnection',
-    'Get-HyprUserStatus',
-    'Get-HyprUserDevices',
-    'Start-HyprAuthentication',
-    'Wait-HyprAuthentication',
-    'Get-HyprAuthenticationStatus',
-    'New-HyprQRCode',
-    'Get-HyprRecoveryPIN',
-    'Remove-HyprUser',
-    'Remove-HyprUserDevice',
-    'Get-HyprFIDO2Settings',
-    'Get-HyprAuditLog',
-    'Set-HyprConfiguration'
-  )
-  
-  PrivateData       = @{
-    PSData = @{
-      Tags       = @('HYPR', 'FIDO2', 'Passwordless', 'Security', 'Authentication')
-      ProjectUri = 'https://github.com/juancherrera/Hypr-Passwordless'
-    }
-  }
-}
+# Add the missing exports
+$newExports = @"
+
+# Export all functions
+Export-ModuleMember -Function @(
+  'Load-HyprConfig',
+  'Get-HyprToken',
+  'Invoke-HyprApi',
+  'Connect-Hypr',
+  'Get-HyprUserStatus',
+  'Get-HyprUserDevices',
+  'Remove-HyprUser',
+  'Remove-HyprUserDevice',
+  'Get-HyprFIDO2Settings',
+  'Get-HyprAuditLog',
+  'Start-HyprAuthentication',
+  'Get-HyprAuthenticationStatus',
+  'New-HyprQRCode',
+  'Get-HyprRecoveryPIN'
+)
+"@
+
+$moduleContent + $newExports | Set-Content ".\Hypr-Passwordless.psm1" -Encoding UTF8
+
+# Re-import the module
+Import-Module ".\Hypr-Passwordless.psd1" -Force
+
+# Now check exports
+Get-Command -Module Hypr-Passwordless
