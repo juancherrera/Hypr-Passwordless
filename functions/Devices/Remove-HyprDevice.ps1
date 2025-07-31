@@ -1,28 +1,22 @@
-function Remove-HyprDevice {
-<#
-.SYNOPSIS
-    Remove-HyprDevice performs its designated HYPR API task.
-.DESCRIPTION
-    Detailed implementation of Remove-HyprDevice, fully compliant with HYPR documentation.
-.EXAMPLE
-    PS> Remove-HyprDevice -Id 12345
-.OUTPUTS
-    [Hashtable] or [String]
-.NOTES
-    Auto-generated to meet compliance, modularity, and security guidelines.
-#>
-    # Validate input
-    param()
-
-    # Load HYPR Config
-    $config = Load-HyprConfig
-
-    # Authenticate
-    $token = Get-HyprToken -Config $config
-
-    # Call API
-    $response = Invoke-HyprApi -Method GET -Uri "/v1/example"
-
-    # Output result
+﻿function Remove-HyprDevice {
+  param(
+    [Parameter(Mandatory)][string]$DeviceId,
+    [Parameter(Mandatory)][PSCustomObject]$Config,
+    [switch]$Force
+  )
+  
+  if (-not $Force) {
+    $confirm = Read-Host "Remove device '$DeviceId'? (y/N)"
+    if ($confirm -ne 'y') { return }
+  }
+  
+  try {
+    $response = Invoke-HyprApi -Method DELETE -Endpoint "/rp/api/versioned/fido2/device/$DeviceId" -Config $Config -TokenType RP
+    
+    Write-Host "Device '$DeviceId' removed successfully" -ForegroundColor Green
     return $response
+  }
+  catch {
+    throw "Failed to remove device: $($_.Exception.Message)"
+  }
 }

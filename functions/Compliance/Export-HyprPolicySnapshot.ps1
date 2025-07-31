@@ -1,28 +1,28 @@
-function Export-HyprPolicySnapshot {
-<#
-.SYNOPSIS
-    Export-HyprPolicySnapshot performs its designated HYPR API task.
-.DESCRIPTION
-    Detailed implementation of Export-HyprPolicySnapshot, fully compliant with HYPR documentation.
-.EXAMPLE
-    PS> Export-HyprPolicySnapshot -Id 12345
-.OUTPUTS
-    [Hashtable] or [String]
-.NOTES
-    Auto-generated to meet compliance, modularity, and security guidelines.
-#>
-    # Validate input
-    param()
-
-    # Load HYPR Config
-    $config = Load-HyprConfig
-
-    # Authenticate
-    $token = Get-HyprToken -Config $config
-
-    # Call API
-    $response = Invoke-HyprApi -Method GET -Uri "/v1/example"
-
-    # Output result
-    return $response
+﻿function Export-HyprPolicySnapshot {
+  param(
+    [string]$OutputPath,
+    [Parameter(Mandatory)][PSCustomObject]$Config
+  )
+  
+  if ([string]::IsNullOrWhiteSpace($Config.CCAdminToken)) {
+    throw "CC Admin token is required for policy export."
+  }
+  
+  try {
+    $response = Invoke-HyprApi -Method GET -Endpoint "/cc/api/policies" -Config $Config -TokenType Admin
+    $snapshot = [PSCustomObject]@{
+      Id = [guid]::NewGuid().ToString()
+      ExportedAt = Get-Date
+      Policies = $response.response
+    }
+    
+    if (![string]::IsNullOrWhiteSpace($OutputPath)) {
+      $snapshot | ConvertTo-Json -Depth 10 | Set-Content -Path $OutputPath -Encoding UTF8
+    }
+    
+    return $snapshot
+  }
+  catch {
+    throw "Failed to export policy snapshot: $($_.Exception.Message)"
+  }
 }

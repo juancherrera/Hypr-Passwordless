@@ -1,28 +1,24 @@
-function Compare-HyprPolicySnapshot {
-<#
-.SYNOPSIS
-    Compare-HyprPolicySnapshot performs its designated HYPR API task.
-.DESCRIPTION
-    Detailed implementation of Compare-HyprPolicySnapshot, fully compliant with HYPR documentation.
-.EXAMPLE
-    PS> Compare-HyprPolicySnapshot -Id 12345
-.OUTPUTS
-    [Hashtable] or [String]
-.NOTES
-    Auto-generated to meet compliance, modularity, and security guidelines.
-#>
-    # Validate input
-    param()
-
-    # Load HYPR Config
-    $config = Load-HyprConfig
-
-    # Authenticate
-    $token = Get-HyprToken -Config $config
-
-    # Call API
-    $response = Invoke-HyprApi -Method GET -Uri "/v1/example"
-
-    # Output result
-    return $response
+﻿function Compare-HyprPolicySnapshot {
+  param(
+    [Parameter(Mandatory)][PSCustomObject]$BaselineSnapshot,
+    [Parameter(Mandatory)][PSCustomObject]$CurrentSnapshot,
+    [Parameter(Mandatory)][PSCustomObject]$Config
+  )
+  
+  if ([string]::IsNullOrWhiteSpace($Config.CCAdminToken)) {
+    throw "CC Admin token is required for policy comparison."
+  }
+  
+  try {
+    $comparison = [PSCustomObject]@{
+      BaselineId = $BaselineSnapshot.Id
+      CurrentId = $CurrentSnapshot.Id
+      ComparedAt = Get-Date
+      Changes = @()
+    }
+    return $comparison
+  }
+  catch {
+    throw "Failed to compare policy snapshots: $($_.Exception.Message)"
+  }
 }

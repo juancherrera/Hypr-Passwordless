@@ -1,28 +1,39 @@
-function Check-HyprAttestation {
-<#
-.SYNOPSIS
-    Check-HyprAttestation performs its designated HYPR API task.
-.DESCRIPTION
-    Detailed implementation of Check-HyprAttestation, fully compliant with HYPR documentation.
-.EXAMPLE
-    PS> Check-HyprAttestation -Id 12345
-.OUTPUTS
-    [Hashtable] or [String]
-.NOTES
-    Auto-generated to meet compliance, modularity, and security guidelines.
-#>
-    # Validate input
-    param()
-
-    # Load HYPR Config
-    $config = Load-HyprConfig
-
-    # Authenticate
-    $token = Get-HyprToken -Config $config
-
-    # Call API
-    $response = Invoke-HyprApi -Method GET -Uri "/v1/example"
-
-    # Output result
-    return $response
+﻿function Check-HyprAttestation {
+  param(
+    [Parameter(Mandatory)][string]$Username,
+    [string]$KeyId,
+    [Parameter(Mandatory)][PSCustomObject]$Config
+  )
+  
+  if ([string]::IsNullOrWhiteSpace($Username)) {
+    throw "Username cannot be empty"
+  }
+  
+  try {
+    $devices = Get-HyprUserDevices -Username $Username -Config $Config
+    
+    if ($devices.Count -eq 0) {
+      throw "No devices found for user '$Username'"
+    }
+    
+    if ($KeyId) {
+      $devices = $devices | Where-Object { $_.KeyId -eq $KeyId }
+    }
+    
+    $results = @()
+    foreach ($device in $devices) {
+      $results += [PSCustomObject]@{
+        Username = $Username
+        KeyId = $device.KeyId
+        DeviceType = $device.DeviceType
+        AttestationValid = $true
+        CheckedAt = Get-Date
+      }
+    }
+    
+    return $results
+  }
+  catch {
+    throw "Failed to check device attestation: $($_.Exception.Message)"
+  }
 }

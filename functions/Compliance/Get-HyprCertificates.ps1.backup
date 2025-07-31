@@ -1,0 +1,1 @@
+function Get-HyprCertificates { <# .SYNOPSIS List registered certificates #> }

@@ -1,0 +1,1 @@
+function Get-HyprWebhooks { <# .SYNOPSIS List webhook configs #> }
