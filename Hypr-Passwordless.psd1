@@ -10,6 +10,7 @@
     "Get-HyprUserStatus", "Get-HyprUserDevices", "Remove-HyprUser",
     "Remove-HyprUserDevice", "Get-HyprFIDO2Settings", "Get-HyprAuditLog",
     "Start-HyprAuthentication", "Get-HyprAuthenticationStatus",
-    "New-HyprQRCode", "Get-HyprRecoveryPIN"
+    "New-HyprQRCode", "Get-HyprRecoveryPIN", "Get-HyprAdminSettings", "Get-HyprSystemHealth"
   )
 }
+

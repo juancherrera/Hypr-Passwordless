@@ -1,4 +1,4 @@
-# HYPR PowerShell Module v2.1 - Production Ready with Working Endpoints
+﻿# HYPR PowerShell Module v2.1 - Production Ready with Working Endpoints
 # Compatible with PowerShell 5.1, 7.x, and all editions
 
 # Set module-level variables
@@ -61,5 +61,7 @@ Export-ModuleMember -Function @(
   'Start-HyprAuthentication',
   'Get-HyprAuthenticationStatus',
   'New-HyprQRCode',
-  'Get-HyprRecoveryPIN'
+  'Get-HyprRecoveryPIN',
+  'Get-HyprAdminSettings',
+  'Get-HyprSystemHealth'
 )
