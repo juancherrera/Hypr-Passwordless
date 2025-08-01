@@ -65,3 +65,4 @@ Export-ModuleMember -Function @(
   'Get-HyprAdminSettings',
   'Get-HyprSystemHealth'
 )
+
